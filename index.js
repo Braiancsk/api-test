@@ -3,7 +3,6 @@ const express = require('express');
 var axios = require('axios');
 
 const app = express();
-const utf8 = require('utf8');
 
 app.use(express.urlencoded({extended: true}))
   
@@ -14,6 +13,16 @@ app.use((req, res, next) => {
   next();
   
 });
+
+function escapeXMLEntities(xmldata) {
+
+    return xmldata.replace(/[\u00A0-\u2666<>\&]/g, function (a) {
+
+            return "&#" + a.charCodeAt(0) + ";"
+
+    })
+
+};
 
 
 app.post('/ServicoConsultaMedicos', (req, res) => {
@@ -26,14 +35,14 @@ app.post('/ServicoConsultaMedicos', (req, res) => {
       method: 'post',
       url: 'https://ws.cfm.org.br:8080/WebServiceConsultaMedicos/ServicoConsultaMedicos',
       headers: { 
-        'Content-Type': 'application/xml',
+        'Content-Type': ('application/xml', 'charset=UTF-8')
       },
       data : data
     };
     
     axios(config)
     .then(function (response) {
-      res.send(utf8.encode(response.data))
+      res.send(response.data)
       
     })
     .catch(function (error) {
