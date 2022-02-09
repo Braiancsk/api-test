@@ -3,7 +3,7 @@ const express = require('express');
 var axios = require('axios');
 
 const app = express();
-
+const utf8 = require('utf8');
 
 app.use(express.urlencoded({extended: true}))
   
@@ -33,7 +33,7 @@ app.post('/ServicoConsultaMedicos', (req, res) => {
     
     axios(config)
     .then(function (response) {
-      res.send(response.data)
+      res.send(utf8.encode(response.data))
       
     })
     .catch(function (error) {
